@@ -10,7 +10,7 @@ const Navbar = () => {
     useEffect(() => {
         if (user) {
             authAxios
-            .get("api/notifications")
+            .get("/api/notifications")
             .then(res => setNotifications(res.data))
             .catch(err => console.error(err));
         }

@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
     );
 
     const login = async (email, password) => {
-        const res = await axios.post("/api/auth/login", { email, password });
+        const res = await authAxios.post("/api/auth/login", { email, password });
         localStorage.setItem("user", JSON.stringify(res.data));
         setUser(res.data);
     };
