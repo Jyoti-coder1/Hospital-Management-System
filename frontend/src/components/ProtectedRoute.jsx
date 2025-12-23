@@ -4,10 +4,10 @@ import { AuthContext } from "../context/AuthContext";
 
 const ProtectedRoute = ({ children, role }) => {
     const { user } = useContext(AuthContext);
-     
+
     if (!user) return <Navigate to="/login" />;
 
-    if (role && user.role !== role && user.role !== "admin") {
+    if (role && user.role.toLowerCase() !== role.toLowerCase() && user.role.toLowerCase() !== "admin") {
         return <Navigate to="/login" />;
     }
 

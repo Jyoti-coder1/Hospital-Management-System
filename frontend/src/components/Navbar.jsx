@@ -10,23 +10,31 @@ const Navbar = () => {
     useEffect(() => {
         if (user) {
             authAxios
-            .get("/api/notifications")
-            .then(res => setNotifications(res.data))
-            .catch(err => console.error(err));
+                .get("/api/notifications")
+                .then(res => setNotifications(res.data))
+                .catch(err => console.error(err));
         }
     }, [user]);
 
+    const unreadCount = notifications.filter((n) => !n.isRead).length;
     return (
-        <nav style={{ display: "flex", gap: "15px" }}>
+        <nav style={{ display: "flex", gap: "15px", alignItems: "center" }}>
             <Link to="/">Dashboard</Link>
             {user?.role === "doctor" && <Link to="/patients">Patients</Link>}
-            <Link to="/appointments">Appointments</Link>
-            <Link to="/medical-records">Medical Records</Link>
-            <Link to="/feedback">Feedback</Link>
+            
+            {["doctor", "nurse"].includes(user?.role) && (
+                <Link to="/appointments">Appointments</Link>
+            )}
+
+            {["doctor", "nurse", "patient"].includes(user?.role) && (
+                <Link to="/medical-records">Medical Records</Link>
+            )}
+            
+            {user?.role === "patient" && <Link to="/feedback">Feedback</Link>}
 
             {user && (
                 <Link to="/notifications">
-                    🔔 {notifications.filter(n => !n.isRead).length}
+                    🔔 {unreadCount > 0 ? unreadCount : ""}
                 </Link>
             )}
 

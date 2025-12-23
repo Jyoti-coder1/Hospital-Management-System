@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState } from "react";
 import axios from "axios";
 
 export const AuthContext = createContext();
@@ -8,8 +8,12 @@ export const AuthProvider = ({ children }) => {
         JSON.parse(localStorage.getItem("user")) || null
     );
 
+    // Plain axios for login (no token yet)
     const login = async (email, password) => {
-        const res = await authAxios.post("/api/auth/login", { email, password });
+        const res = await axios.post(
+            `${import.meta.env.VITE_API_URL}/api/auth/login`,
+            { email, password }
+        );
         localStorage.setItem("user", JSON.stringify(res.data));
         setUser(res.data);
     };
@@ -19,9 +23,16 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
-    const authAxios = axios.create();
+    // Authenticated axios instance for protected routes
+    const authAxios = axios.create({
+        baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
+    });
+
     authAxios.interceptors.request.use((config) => {
-        if (user) config.headers.Authorization = `Bearer ${user.token}`;
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        if (storedUser?.token) {
+            config.headers.Authorization = `Bearer ${storedUser.token}`;
+        }
         return config;
     });
 

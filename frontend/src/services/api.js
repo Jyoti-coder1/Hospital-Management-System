@@ -3,13 +3,14 @@ import axios from "axios";
 // Create axios instance
 const authAxios = axios.create({
     baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
+    withCredentials: true,
 });
 
 // Attach token automatically
 authAxios.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+    const user = localStorage.getItem("user");
+    if (user?.token) {
+        config.headers.Authorization = `Bearer ${user.token}`;
     }
     return config;
 });
