@@ -11,12 +11,24 @@ const notificationRoutes = require("./routes/notification.routes");
 
 const app = express();
 
-const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(",") : ["http://localhost:5173"];
+const allowedOrigins = process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(",").map((o) => o.trim()) : ["http://localhost:5173"];
 
-app.use(cors({
-    origin: allowedOrigins,
-    credentials: true
-}));
+app.use(
+    cors({
+        origin: function (origin, callback) {
+            // Allow requests with no origin (like Postman)
+            if (!origin) return callback(null, true);
+            if (allowedOrigins.indexOf(origin) === -1) {
+                const msg = `The CORS policy for this site does not allow access from the specified Origin: ${origin}`;
+                return callback(new Error(msg), false);
+            }
+            return callback(null, true);
+        },
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+    })
+);
 
 app.use(express.json());
 

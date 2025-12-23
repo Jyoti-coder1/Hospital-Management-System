@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import axios from "axios";
+import authAxios from "../services/api";
 
 export const AuthContext = createContext();
 
@@ -23,21 +23,8 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
-    // Authenticated axios instance for protected routes
-    const authAxios = axios.create({
-        baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
-    });
-
-    authAxios.interceptors.request.use((config) => {
-        const storedUser = JSON.parse(localStorage.getItem("user"));
-        if (storedUser?.token) {
-            config.headers.Authorization = `Bearer ${storedUser.token}`;
-        }
-        return config;
-    });
-
     return (
-        <AuthContext.Provider value={{ user, login, logout, authAxios }}>
+        <AuthContext.Provider value={{ user, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

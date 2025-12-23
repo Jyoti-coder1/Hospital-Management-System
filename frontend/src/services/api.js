@@ -13,6 +13,8 @@ authAxios.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${user.token}`;
     }
     return config;
-});
+},
+    (error) => Promise.reject(error)
+);
 
 export default authAxios;
