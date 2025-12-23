@@ -8,7 +8,7 @@ const authAxios = axios.create({
 
 // Attach token automatically
 authAxios.interceptors.request.use((config) => {
-    const user = localStorage.getItem("user");
+    const user = JSON.parse(localStorage.getItem("user"));
     if (user?.token) {
         config.headers.Authorization = `Bearer ${user.token}`;
     }

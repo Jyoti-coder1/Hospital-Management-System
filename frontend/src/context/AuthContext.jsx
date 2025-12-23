@@ -10,10 +10,10 @@ export const AuthProvider = ({ children }) => {
 
     // Plain axios for login (no token yet)
     const login = async (email, password) => {
-        const res = await axios.post(
-            `${import.meta.env.VITE_API_URL}/api/auth/login`,
-            { email, password }
-        );
+        const res = await authAxios.post("/api/auth/login", {
+            email,
+            password
+        });
         localStorage.setItem("user", JSON.stringify(res.data));
         setUser(res.data);
     };
